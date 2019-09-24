@@ -8,6 +8,7 @@ from allennlp.data.tokenizers import WordTokenizer
 from allennlp.data.iterators import BasicIterator
 sys.path.append('..')
 import utils
+import torch
 import attacks
 
 def main():
@@ -18,7 +19,10 @@ def main():
     dev_dataset = reader.read('https://s3-us-west-2.amazonaws.com/allennlp/datasets/snli/snli_1.0_dev.jsonl')
     # Load model and vocab
     model = load_archive('https://allennlp.s3-us-west-2.amazonaws.com/models/esim-glove-snli-2019.04.23.tar.gz').model
-    model.eval().cuda()
+  #  if torch.cuda.is_available():
+  #      model.eval().cuda()
+  #  else:
+    model.eval()
     vocab = model.vocab
 
     # add hooks for embeddings so we can compute gradients w.r.t. to the input tokens

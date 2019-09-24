@@ -42,7 +42,8 @@ def evaluate_batch(model, batch, trigger_token_ids=None, snli=False):
     If trigger_token_ids is not None, then it will append the tokens to the input.
     This funtion is used to get the model's accuracy and/or the loss with/without the trigger.
     """
-    batch = move_to_device(batch[0], cuda_device=0)
+    #batch = move_to_device(batch[0], cuda_device=0)
+    batch = move_to_device(batch[0], cuda_device=-1)
     if trigger_token_ids is None:
         if snli:
             model(batch['premise'], batch['hypothesis'], batch['label'])
@@ -51,7 +52,8 @@ def evaluate_batch(model, batch, trigger_token_ids=None, snli=False):
         return None
     else:
         trigger_sequence_tensor = torch.LongTensor(deepcopy(trigger_token_ids))
-        trigger_sequence_tensor = trigger_sequence_tensor.repeat(len(batch['label']), 1).cuda()
+       #trigger_sequence_tensor = trigger_sequence_tensor.repeat(len(batch['label']), 1).cuda()
+        trigger_sequence_tensor = trigger_sequence_tensor.repeat(len(batch['label']), 1)
         if snli:
             original_tokens = batch['hypothesis']['tokens'].clone()
             batch['hypothesis']['tokens'] = torch.cat((trigger_sequence_tensor, original_tokens), 1)
@@ -77,7 +79,8 @@ def get_average_grad(model, batch, trigger_token_ids, target_label=None, snli=Fa
     original_labels = batch[0]['label'].clone()
     if target_label is not None:
         # set the labels equal to the target (backprop from the target class, not model prediction)
-        batch[0]['label'] = int(target_label) * torch.ones_like(batch[0]['label']).cuda()
+        # batch[0]['label'] = int(target_label) * torch.ones_like(batch[0]['label']).cuda()
+        batch[0]['label'] = int(target_label) * torch.ones_like(batch[0]['label'])
     global extracted_grads
     extracted_grads = [] # clear existing stored grads
     loss = evaluate_batch(model, batch, trigger_token_ids, snli)['loss']
