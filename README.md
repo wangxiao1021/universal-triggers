@@ -25,6 +25,18 @@ Now you should be ready to go!
 
 The repository is broken down by task: 
 + `sst` attacks sentiment analysis using the SST dataset (AllenNLP-based).
+
+stanford sentiment treebank 数据集
+datasetSentences.txt  格式：句子索引 句子内容
+datasetSplit.txt  格式： 句子索引  句子属于哪个集合（1 = train   2 = test   3 = dev）
+train有8544条，test有1101条，dev有 2210条
+dictionary.txt  格式 ：句子（或者短语）| 索引值
+sentiment_labels.txt  格式：索引值 | 情感值
+句子和短语总有239232条
+情感值对应类别：[0, 0.2], (0.2, 0.4], (0.4, 0.6], (0.6, 0.8], (0.8, 1.0] 分别对应五分类情感
+将其处理成一句对应一个分数，并且分成训练集和验证集和测试集，和原本的数据些微差别，训练集少了100条数据，验证集少了8条数据，测试集少了10条数据，因为datasetSentences.txt 中有些句子里面的人名表示有特殊字符，和 dictionary.txt   不能匹配上，你也可以手动加上。
+https://blog.csdn.net/ltochange/article/details/61194650
+
 + `snli` attacks natural language inference models on the SNLI dataset (AllenNLP-based).
 + `squad` attacks reading comprehension models using the SQuAD dataset (AllenNLP-based).
 + `gpt2` attacks the GPT-2 language model using HuggingFace's model.
